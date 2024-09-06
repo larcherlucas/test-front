@@ -1,70 +1,114 @@
-<script setup>
+<script setup lang="ts">
+import { ref } from 'vue';
 import { useFormStore } from '../stores/FormStore';
+import FormField from './FormS.vue';
+
 const formStore = useFormStore();
 
-function submitForm() {
+const name = ref(formStore.name);
+const email = ref(formStore.email);
+const phone = ref(formStore.phone);
+const birthdate = ref(formStore.birthdate);
+const address = ref(formStore.address);
+const postalCode = ref(formStore.postalCode);
+const city = ref(formStore.city);
+const country = ref(formStore.country);
+const password = ref(formStore.password);
+const confirmPassword = ref(formStore.confirmPassword);
+
+const updateFormStore = () => {
+  formStore.name = name.value;
+  formStore.email = email.value;
+  formStore.phone = phone.value;
+  formStore.birthdate = birthdate.value;
+  formStore.address = address.value;
+  formStore.postalCode = postalCode.value;
+  formStore.city = city.value;
+  formStore.country = country.value;
+  formStore.password = password.value;
+  formStore.confirmPassword = confirmPassword.value;
+};
+
+const submitForm = () => {
+  updateFormStore();
   formStore.submitForm();
-}
+};
+
+const hasError = (field: string): string => formStore.errors[field] || '';
 </script>
 
 <template>
   <div class="form-container">
     <h2>Formulaire d'inscription</h2>
     <form @submit.prevent="submitForm">
-      <!-- Nom -->
-      <div>
-        <label for="name">Nom (obligatoire) :</label>
-        <input type="text" v-model="formStore.name" id="name" />
-        <span v-if="formStore.errors.name">{{ formStore.errors.name }}</span>
-      </div>
+      <FormField
+        id="name"
+        label="Nom complet (obligatoire)"
+        type="text"
+        v-model="name"
+        :error="hasError('name')"
+      />
 
-      <!-- Email -->
-      <div>
-        <label for="email">Email (obligatoire) :</label>
-        <input type="email" v-model="formStore.email" id="email" />
-        <span v-if="formStore.errors.email">{{ formStore.errors.email }}</span>
-      </div>
+      <FormField
+        id="email"
+        label="Adresse e-mail (obligatoire)"
+        type="email"
+        v-model="email"
+        :error="hasError('email')"
+      />
 
-      <!-- Téléphone -->
-      <div>
-        <label for="phone">Téléphone (10 chiffres) :</label>
-        <input type="text" v-model="formStore.phone" id="phone" maxlength="10" />
-        <span v-if="formStore.errors.phone">{{ formStore.errors.phone }}</span>
-      </div>
+      <FormField
+        id="phone"
+        label="Téléphone (10 chiffres)"
+        type="text"
+        v-model="phone"
+        :error="hasError('phone')"
+      />
 
-      <!-- Date de naissance -->
-      <div>
-        <label for="birthdate">Date de naissance (obligatoire, dans le passé) :</label>
-        <input type="date" v-model="formStore.birthdate" id="birthdate" />
-        <span v-if="formStore.errors.birthdate">{{ formStore.errors.birthdate }}</span>
-      </div>
+      <FormField
+        id="birthdate"
+        label="Date de naissance (obligatoire, dans le passé)"
+        type="date"
+        v-model="birthdate"
+        :error="hasError('birthdate')"
+      />
 
-      <!-- Adresse -->
-      <div>
+      <div class="form-group">
         <label for="address">Adresse (maximum 300 caractères) :</label>
-        <textarea v-model="formStore.address" id="address" maxlength="300"></textarea>
-        <span>{{ formStore.address.length }} / 300 caractères</span>
-        <span v-if="formStore.errors.address">{{ formStore.errors.address }}</span>
+        <textarea 
+          v-model="address" 
+          id="address" 
+          maxlength="300" 
+          @input="updateFormStore"
+        ></textarea>
+        <p>{{ address.length }} / 300 caractères</p>
+        <span v-if="hasError('address')" class="error">{{ formStore.errors.address }}</span>
       </div>
 
-      <!-- Code postal -->
-      <div>
-        <label for="postalCode">Code postal (5 chiffres) :</label>
-        <input type="text" v-model="formStore.postalCode" id="postalCode" maxlength="5" />
-        <span v-if="formStore.errors.postalCode">{{ formStore.errors.postalCode }}</span>
-      </div>
+      <FormField
+        id="postalCode"
+        label="Code postal (5 chiffres)"
+        type="text"
+        v-model="postalCode"
+        :error="hasError('postalCode')"
+      />
 
-      <!-- Ville -->
-      <div>
-        <label for="city">Ville (obligatoire) :</label>
-        <input type="text" v-model="formStore.city" id="city" />
-        <span v-if="formStore.errors.city">{{ formStore.errors.city }}</span>
-      </div>
+      <FormField
+        id="city"
+        label="Ville (obligatoire)"
+        type="text"
+        v-model="city"
+        :error="hasError('city')"
+      />
 
-      <!-- Pays -->
-      <div>
+      <div class="form-group">
         <label for="country">Pays (obligatoire) :</label>
-        <select v-model="formStore.country" id="country">
+        <select 
+          v-model="country" 
+          id="country" 
+          @change="updateFormStore"
+          :class="{ 'input-error': hasError('country') }"
+        >
           <option value="">Sélectionnez un pays</option>
           <option value="France">France</option>
           <option value="Belgique">Belgique</option>
@@ -72,29 +116,86 @@ function submitForm() {
           <option value="Canada">Canada</option>
           <option value="Allemagne">Allemagne</option>
         </select>
-        <span v-if="formStore.errors.country">{{ formStore.errors.country }}</span>
+        <span v-if="hasError('country')" class="error">{{ formStore.errors.country }}</span>
       </div>
 
-      <!-- Mot de passe -->
-      <div>
-        <label for="password">Mot de passe (8 caractères minimum avec majuscule, minuscule, chiffre et caractère spécial) :</label>
-        <input type="password" v-model="formStore.password" id="password" />
-        <span v-if="formStore.errors.password">{{ formStore.errors.password }}</span>
-      </div>
+      <FormField
+        id="password"
+        label="Mot de passe (8 caractères minimum avec majuscule, minuscule, chiffre et caractère spécial)"
+        type="password"
+        v-model="password"
+        :error="hasError('password')"
+      />
 
-      <!-- Confirmation du mot de passe -->
-      <div>
-        <label for="confirmPassword">Confirmation du mot de passe :</label>
-        <input type="password" v-model="formStore.confirmPassword" id="confirmPassword" />
-        <span v-if="formStore.errors.confirmPassword">{{ formStore.errors.confirmPassword }}</span>
-      </div>
+      <FormField
+        id="confirmPassword"
+        label="Confirmation du mot de passe"
+        type="password"
+        v-model="confirmPassword"
+        :error="hasError('confirmPassword')"
+      />
 
       <button type="submit">S'inscrire</button>
-    </form>
 
-    <!-- Message de confirmation après soumission -->
-    <div v-if="formStore.submitted">
-      <h3>Merci pour votre inscription, {{ formStore.name }} !</h3>
-    </div>
+      <div v-if="formStore.submitted" class="success-message">
+        <h3>Merci pour votre inscription, {{ name }} !</h3>
+      </div>
+    </form>
   </div>
 </template>
+
+<style scoped>
+.form-container {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid black;
+  border-radius: 8px;
+  background-color: black;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.error {
+  color: red;
+  font-size: 0.875em;
+}
+
+.success-message {
+  margin-top: 20px;
+  color: green;
+}
+</style>
