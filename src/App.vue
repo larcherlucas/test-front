@@ -1,10 +1,18 @@
 <script setup lang="ts">
-import Form from './components/Form.vue';
+import Formulaire from '../src/components/Form/Form.vue';
 </script>
 
 <template>
   <main>
-    <Form />
+    <Formulaire />
   </main>
 </template>
 
+<style scoped>
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+</style>
