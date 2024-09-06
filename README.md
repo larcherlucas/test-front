@@ -1,61 +1,56 @@
 # test-front-formulaire
 
-This template should help get you started developing with Vue 3 in Vite.
+Ce projet est une application Vue.js qui gère un formulaire d'inscription avec validation en temps réel. Les validations sont effectuées via des expressions régulières, et le projet utilise Vitest pour les tests unitaires.
 
-## Recommended IDE Setup
+# Table des Matières
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+Prérequis
+Installation
+Lancer le Projet
+Tests
+Améliorations pour V2
 
-## Type Support for `.vue` Imports in TS
+# Prérequis
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur votre machine :
 
-## Customize configuration
+Node.js (version 16 ou supérieure recommandée)
+npm (inclus avec Node.js)
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+# Installation
 
-## Project Setup
+- Clonez le dépôt
+- Installez les dépendances, conseil utilisez pnpm
 
-```sh
-pnpm install
-```
+# Lancer le Projet
 
-### Compile and Hot-Reload for Development
+npm run dev ou utilisation des scripts NPM
 
-```sh
-pnpm dev
-```
+- Pour construire le projet pour la production : npm run build
 
-### Type-Check, Compile and Minify for Production
+# Test
 
-```sh
-pnpm build
-```
+Lancez tous les tests définis dans le répertoire __tests__ : npm test
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+- Les tests utilisent Vitest avec une configuration définie dans vitest.config.ts. Assurez-vous que ce fichier est correctement configuré pour votre environnement de développement.
 
-```sh
-pnpm test:unit
-```
+# Améliorations pour V2
 
-### Run End-to-End Tests with [Cypress](https://www.cypress.io/)
+Voici quelques idées pour améliorer le projet dans une future version (V2) :
 
-```sh
-pnpm test:e2e:dev
-```
+1- Amélioration de l'UX/UI :
 
-This runs the end-to-end tests against the Vite development server.
-It is much faster than the production build.
+- Ajouter des animations ou des transitions pour rendre les interactions plus fluides.
+- Réviser les styles pour s'assurer qu'ils sont cohérents avec les meilleures pratiques de design.
 
-But it's still recommended to test the production build with `test:e2e` before deploying (e.g. in CI environments):
+2- Validation Avancée :
 
-```sh
-pnpm build
-pnpm test:e2e
-```
+- Intégrer une bibliothèque de validation pour des règles de validation plus robustes.
 
-### Lint with [ESLint](https://eslint.org/)
+3- Internationalisation :
 
-```sh
-pnpm lint
-```
+- Ajouter le support de plusieurs langues en utilisant des bibliothèques comme vue-i18n.
+
+4- Amélioration des Performances :
+
+- Analyser et optimiser les performances de l'application pour une meilleure réactivité.

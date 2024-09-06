@@ -1,12 +1,12 @@
 <template>
-  <div :class="['form-field', { 'has-error': error }]">
+  <div :class="['form-field', { 'has-error': error, 'is-valid': isValid && isShowCheck }]">
     <label :for="id">{{ label }}</label>
     <div class="input-container">
       <component
         :is="componentType"
         :id="id"
         :value="modelValue"
-        @input="$emit('update:modelValue', $event.target.value)"
+        @input="handleInput"
         :type="inputType"
         :placeholder="placeholder"
         class="form-input"
@@ -15,9 +15,9 @@
           <option v-for="option in options" :key="option" :value="option">{{ option }}</option>
         </template>
       </component>
-      <button v-if="isPassword" @click="togglePasswordVisibility" type="button" class="toggle-password">
-        {{ isPasswordVisible ? 'Cacher' : 'Afficher' }}
-      </button>
+
+      <!-- Icône de validation ✔ à droite pour les champs valides sauf pour adresse et nom complet -->
+      <span v-if="isValid && isShowCheck" class="success-check">✔</span>
     </div>
     <span v-if="error" class="error-message">{{ error }}</span>
   </div>
@@ -25,6 +25,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { emailRegex, phoneRegex, postalCodeRegex, isDateInPast } from '../validator/validate';
 
 const props = defineProps<{
   id: string;
@@ -40,11 +41,12 @@ const emit = defineEmits<{
   (event: 'update:modelValue', value: string): void;
 }>();
 
-const isPassword = computed(() => props.type === 'password');
-const isPasswordVisible = ref(false);
+const isPasswordField = computed(() => props.type === 'password');
+const isAddressField = computed(() => props.id === 'address');
+const isNameField = computed(() => props.id === 'name');
 
 const inputType = computed(() => {
-  return isPassword.value && !isPasswordVisible.value ? 'password' : 'text';
+  return isPasswordField.value ? 'password' : 'text';
 });
 
 const componentType = computed(() => {
@@ -60,8 +62,26 @@ const componentType = computed(() => {
   }
 });
 
-const togglePasswordVisibility = () => {
-  isPasswordVisible.value = !isPasswordVisible.value;
+const isValid = ref(false);
+const isShowCheck = computed(() => !isAddressField.value && !isNameField.value);
+
+const handleInput = (event: Event) => {
+  const value = (event.target as HTMLInputElement).value;
+  emit('update:modelValue', value);
+
+  if (props.type === 'email') {
+    isValid.value = emailRegex.test(value);
+  } else if (props.id === 'phone') {
+    isValid.value = phoneRegex.test(value);
+  } else if (props.id === 'postalCode') {
+    isValid.value = postalCodeRegex.test(value);
+  } else if (props.type === 'date') {
+    isValid.value = isDateInPast(value);
+  } else if (props.type === 'text' || props.type === 'textarea' || props.type === 'select') {
+    isValid.value = value.trim() !== '';
+  } else {
+    isValid.value = false;
+  }
 };
 </script>
 
@@ -75,14 +95,14 @@ const togglePasswordVisibility = () => {
 
 .input-container {
   display: flex;
-  flex-direction: column;
   align-items: center;
   position: relative;
+  width: 100%;
+  max-width: 400px;
 }
 
 .form-input {
   width: 100%;
-  max-width: 400px; 
   padding: 8px;
   border-radius: 4px;
   border: 1px solid #ccc;
@@ -92,20 +112,14 @@ const togglePasswordVisibility = () => {
   border-color: red;
 }
 
-.error-message {
-  color: red;
-  font-size: 0.875rem;
-  margin-top: 0.5rem;
+.is-valid .form-input {
+  border-color: green;
 }
 
-.toggle-password {
-  background: none;
-  border: none;
-  color: blue;
-  cursor: pointer;
-  position: absolute; 
+.success-check {
+  position: absolute;
   right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
+  font-size: 1.25rem;
+  color: green;
 }
 </style>

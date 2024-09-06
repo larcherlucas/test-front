@@ -40,7 +40,7 @@ const formFields = computed(() => [
   { id: 'address', label: 'Adresse', type: 'textarea' },
   { id: 'postalCode', label: 'Code postal', type: 'text' },
   { id: 'city', label: 'Ville', type: 'text' },
-  { id: 'country', label: 'Pays', type: 'select', options: ['France', 'Belgique', 'Suisse', 'Maurice', 'Allemagne'] },
+  { id: 'country', label: 'Pays', type: 'select', options: ['France', 'Belgique', 'Suisse', 'Maurice', 'Canada'] },
   { id: 'password', label: 'Mot de passe', type: 'password' },
   { id: 'confirmPassword', label: 'Confirmation du mot de passe', type: 'password' },
 ]);
